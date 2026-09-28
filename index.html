@@ -1,235 +1,590 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucro Real | Simulador de Negócios</title>
-<style>
-:root {
-  --bg:#0b1020; --panel:#131c30; --line:#293650;
-  --text:#edf3ff; --muted:#94a3b8;
-  --green:#4ade80; --blue:#60a5fa; --red:#fb7185;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; background:var(--bg); color:var(--text);
-  font:15px/1.6 system-ui,-apple-system,sans-serif;
-}
-main { width:min(100% - 32px,1000px); margin:40px auto 70px; }
-header { margin-bottom:28px; }
-.eyebrow { color:var(--green); font-weight:700; letter-spacing:2px; font-size:12px; }
-h1 { font-size:clamp(30px,6vw,48px); line-height:1.1; margin:10px 0; }
-p { color:var(--muted); }
-.panel {
-  background:var(--panel); border:1px solid var(--line);
-  border-radius:18px; padding:22px; margin:18px 0;
-}
-.results {
-  display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-}
-.metric {
-  background:#0e1728; border:1px solid var(--line);
-  border-radius:13px; padding:17px; min-width:0;
-}
-.metric small { color:var(--muted); display:block; }
-.metric strong { display:block; font-size:clamp(18px,3vw,27px); overflow-wrap:anywhere; }
-.green { color:var(--green); }
-.red { color:var(--red); }
-h2 { font-size:19px; margin:0 0 18px; }
-h3 { font-size:14px; color:var(--blue); margin:24px 0 12px; }
-.fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
-label { display:block; color:var(--muted); font-size:13px; margin-bottom:6px; }
-input {
-  width:100%; background:#0b1323; border:1px solid var(--line);
-  border-radius:9px; color:var(--text); padding:12px;
-  font:inherit; outline:none;
-}
-input:focus { border-color:var(--blue); }
-.summary { display:grid; gap:0; }
-.line {
-  display:flex; justify-content:space-between; gap:16px;
-  padding:11px 0; border-bottom:1px solid var(--line);
-}
-.line span:first-child { color:var(--muted); }
-.line strong { text-align:right; }
-.line.total { font-size:18px; border:0; padding-top:18px; }
-button {
-  background:var(--green); color:#052e16; border:0;
-  border-radius:10px; padding:12px 18px; font:inherit;
-  font-weight:750; cursor:pointer;
-}
-.actions { display:flex; gap:10px; flex-wrap:wrap; }
-.secondary { background:transparent; color:var(--text); border:1px solid var(--line); }
-.note { font-size:12px; }
-@media(max-width:650px) {
-  main { margin-top:24px; }
-  .results { grid-template-columns:1fr; }
-  .fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .panel { padding:16px; }
-}
-@media(max-width:390px) {
-  .fields { grid-template-columns:1fr; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Lucro Real | Calculadora de Negócios</title>
+
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #141e30;
+      --input: #0c1525;
+      --border: #28364c;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --green: #34d399;
+      --blue: #60a5fa;
+      --red: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      padding: 28px 16px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin: 24px 0 14px;
+      text-transform: uppercase;
+    }
+
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      color: #cbd5e1;
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    input {
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      padding: 12px;
+      width: 100%;
+    }
+
+    input:focus {
+      border-color: var(--green);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result {
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 16px;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .result-value {
+      font-size: 23px;
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    .profit {
+      background: #102b27;
+      border-color: #1d594b;
+    }
+
+    .profit .result-value {
+      color: var(--green);
+      font-size: 30px;
+    }
+
+    .negative {
+      color: var(--red) !important;
+    }
+
+    .small-results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .small-results .result-value {
+      font-size: 19px;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 18px;
+    }
+
+    .button {
+      background: var(--green);
+      border: none;
+      border-radius: 9px;
+      color: #052e25;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 8px;
+      padding: 13px;
+      width: 100%;
+    }
+
+    .button:hover {
+      filter: brightness(1.08);
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 20px 12px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<main>
-<header>
-  <div class="eyebrow">FINANÇAS • PLANEJAMENTO</div>
-  <h1>Lucro <span class="green">Real.</span></h1>
-  <p>Descubra quanto seu negócio pode ganhar por mês. Ajuste os valores e simule cenários.</p>
-</header>
+  <main class="container">
 
-<section class="panel">
-  <h2>Resultado mensal estimado</h2>
-  <div class="results">
-    <div class="metric">
-      <small>Lucro líquido estimado</small>
-      <strong id="profit" class="green">R$ 0,00</strong>
+    <header>
+      <div class="logo">Lucro Real</div>
+      <h1>Calculadora de lucro</h1>
+      <p class="subtitle">
+        Descubra quanto seu negócio realmente ganha por mês.
+        Ajuste os valores e veja os resultados automaticamente.
+      </p>
+    </header>
+
+    <div class="layout">
+
+      <!-- ENTRADAS -->
+      <section class="card">
+        <h2>Dados do negócio</h2>
+
+        <div class="section-title">Vendas</div>
+
+        <div class="field">
+          <label for="units">Unidades vendidas por mês</label>
+          <input id="units" type="number" min="0" step="1" value="189">
+        </div>
+
+        <div class="field">
+          <label for="price">Preço de venda por unidade (R$)</label>
+          <input id="price" type="number" min="0" step="0.01" value="15">
+        </div>
+
+        <div class="section-title">Custos por unidade</div>
+
+        <div class="field">
+          <label for="cost">Custo do produto (R$)</label>
+          <input id="cost" type="number" min="0" step="0.01" value="6">
+        </div>
+
+        <div class="field">
+          <label for="packing">Embalagem por unidade (R$)</label>
+          <input id="packing" type="number" min="0" step="0.01" value="1">
+        </div>
+
+        <div class="field">
+          <label for="shipping">Frete pago por unidade (R$)</label>
+          <input id="shipping" type="number" min="0" step="0.01" value="0">
+        </div>
+
+        <div class="section-title">Despesas percentuais</div>
+
+        <div class="field">
+          <label for="loss">Perdas e devoluções (%)</label>
+          <input id="loss" type="number" min="0" max="100" step="0.1" value="1">
+        </div>
+
+        <div class="field">
+          <label for="fees">Taxas de pagamento (%)</label>
+          <input id="fees" type="number" min="0" max="100" step="0.1" value="3">
+        </div>
+
+        <div class="field">
+          <label for="tax">Impostos estimados (%)</label>
+          <input id="tax" type="number" min="0" max="100" step="0.1" value="6">
+          <p class="hint">
+            Informe a porcentagem estimada sobre o faturamento.
+          </p>
+        </div>
+
+        <div class="section-title">Despesas mensais</div>
+
+        <div class="field">
+          <label for="fixed">Despesas fixas mensais (R$)</label>
+          <input id="fixed" type="number" min="0" step="0.01" value="0">
+        </div>
+
+        <div class="field">
+          <label for="interest">Outras despesas mensais (R$)</label>
+          <input id="interest" type="number" min="0" step="0.01" value="0">
+        </div>
+
+        <button class="button" id="reset" type="button">
+          Restaurar valores iniciais
+        </button>
+      </section>
+
+      <!-- RESULTADOS -->
+      <section class="card">
+        <h2>Resumo financeiro</h2>
+
+        <div class="results">
+
+          <div class="result">
+            <div class="result-label">Faturamento mensal</div>
+            <div class="result-value" id="sRevenue">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Custo dos produtos</div>
+            <div class="result-value" id="sProducts">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Embalagens</div>
+            <div class="result-value" id="sPacking">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Perdas e devoluções</div>
+            <div class="result-value" id="sLoss">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Taxas de pagamento</div>
+            <div class="result-value" id="sFees">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Impostos estimados</div>
+            <div class="result-value" id="sTax">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Frete</div>
+            <div class="result-value" id="sShipping">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Despesas fixas</div>
+            <div class="result-value" id="sFixed">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Outras despesas</div>
+            <div class="result-value" id="sOther">R$ 0,00</div>
+          </div>
+
+          <div class="result profit">
+            <div class="result-label">Lucro líquido estimado</div>
+            <div class="result-value" id="sProfit">R$ 0,00</div>
+          </div>
+
+        </div>
+
+        <div class="small-results">
+
+          <div class="result">
+            <div class="result-label">Margem de lucro</div>
+            <div class="result-value" id="sMargin">0%</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Lucro por unidade</div>
+            <div class="result-value" id="sUnitProfit">R$ 0,00</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Ponto de equilíbrio</div>
+            <div class="result-value" id="sBreakEven">0 un.</div>
+          </div>
+
+          <div class="result">
+            <div class="result-label">Custo total mensal</div>
+            <div class="result-value" id="sTotalCosts">R$ 0,00</div>
+          </div>
+
+        </div>
+
+        <p class="note" id="status">
+          Preencha os dados para calcular o resultado.
+        </p>
+
+        <p class="note">
+          Esta ferramenta fornece estimativas. O cálculo de impostos
+          depende do regime tributário, da atividade e das regras
+          aplicáveis ao seu negócio.
+        </p>
+      </section>
+
     </div>
-    <div class="metric">
-      <small>Faturamento</small>
-      <strong id="revenue">R$ 0,00</strong>
-    </div>
-    <div class="metric">
-      <small>Margem líquida</small>
-      <strong id="margin">0,0%</strong>
-    </div>
-    <div class="metric">
-      <small>Lucro por venda</small>
-      <strong id="perSale">R$ 0,00</strong>
-    </div>
-    <div class="metric">
-      <small>Ponto de equilíbrio</small>
-      <strong id="breakEven">—</strong>
-    </div>
-    <div class="metric">
-      <small>Faturamento de equilíbrio</small>
-      <strong id="breakRevenue">—</strong>
-    </div>
-  </div>
-</section>
 
-<section class="panel">
-  <h2>Dados do negócio</h2>
-  <div class="fields">
-    <div><label for="units">Vendas por mês (unidades)</label><input id="units" type="number" min="0" value="300"></div>
-    <div><label for="price">Preço por unidade (R$)</label><input id="price" type="number" min="0" step=".01" value="50"></div>
-    <div><label for="cost">Custo do produto/unidade (R$)</label><input id="cost" type="number" min="0" step=".01" value="18"></div>
-    <div><label for="pack">Embalagem por unidade (R$)</label><input id="pack" type="number" min="0" step=".01" value="2"></div>
-    <div><label for="shipping">Frete subsidiado por unidade (R$)</label><input id="shipping" type="number" min="0" step=".01" value="0"></div>
-    <div><label for="loss">Perdas e devoluções (% da receita)</label><input id="loss" type="number" min="0" max="100" step=".1" value="1"></div>
-    <div><label for="fee">Taxas de pagamento (%)</label><input id="fee" type="number" min="0" max="100" step=".1" value="3"></div>
-    <div><label for="tax">Impostos sobre vendas (%)</label><input id="tax" type="number" min="0" max="100" step=".1" value="6"></div>
-    <div><label for="rent">Aluguel (R$/mês)</label><input id="rent" type="number" min="0" step=".01" value="800"></div>
-    <div><label for="payroll">Salários e encargos (R$/mês)</label><input id="payroll" type="number" min="0" step=".01" value="1200"></div>
-    <div><label for="utilities">Água, luz e internet (R$/mês)</label><input id="utilities" type="number" min="0" step=".01" value="250"></div>
-    <div><label for="marketing">Marketing (R$/mês)</label><input id="marketing" type="number" min="0" step=".01" value="200"></div>
-    <div><label for="accounting">Contabilidade e sistemas (R$/mês)</label><input id="accounting" type="number" min="0" step=".01" value="150"></div>
-    <div><label for="maintenance">Manutenção e outros (R$/mês)</label><input id="maintenance" type="number" min="0" step=".01" value="100"></div>
-    <div><label for="depreciation">Depreciação (R$/mês)</label><input id="depreciation" type="number" min="0" step=".01" value="0"></div>
-    <div><label for="interest">Juros e despesas financeiras (R$/mês)</label><input id="interest" type="number" min="0" step=".01" value="0"></div>
-  </div>
-  <p class="note">Use valores mensais médios. Informe apenas custos que ainda não estejam incluídos em outros campos.</p>
-  <div class="actions">
-    <button id="reset" type="button">Restaurar exemplo</button>
-    <button id="print" class="secondary" type="button">Imprimir relatório</button>
-  </div>
-</section>
+    <footer>
+      Lucro Real — uma ferramenta simples para entender suas finanças.
+    </footer>
 
-<section class="panel">
-  <h2>Demonstrativo mensal</h2>
-  <div class="summary">
-    <div class="line"><span>Receita bruta</span><strong id="sRevenue">—</strong></div>
-    <div class="line"><span>Custos dos produtos</span><strong id="sProducts">—</strong></div>
-    <div class="line"><span>Embalagens e frete</span><strong id="sPacking">—</strong></div>
-    <div class="line"><span>Perdas e devoluções</span><strong id="sLoss">—</strong></div>
-    <div class="line"><span>Taxas de pagamento</span><strong id="sFees">—</strong></div>
-    <div class="line"><span>Impostos estimados</span><strong id="sTax">—</strong></div>
-    <div class="line"><span>Despesas fixas</span><strong id="sFixed">—</strong></div>
-    <div class="line"><span>Despesas financeiras</span><strong id="sInterest">—</strong></div>
-    <div class="line total"><span>Lucro líquido estimado</span><strong id="sProfit">—</strong></div>
-  </div>
-  <p class="note">Estimativa gerencial, não substitui a apuração contábil ou tributária. O resultado depende da qualidade dos dados inseridos.</p>
-</section>
-</main>
+  </main>
 
-<script>
-const ids = [
-  "units","price","cost","pack","shipping","loss","fee","tax",
-  "rent","payroll","utilities","marketing","accounting",
-  "maintenance","depreciation","interest"
-];
-const $ = id => document.getElementById(id);
-const n = id => Math.max(0, Number($(id).value) || 0);
-const brl = value => value.toLocaleString("pt-BR", {
-  style:"currency", currency:"BRL"
-});
-const pct = value => value.toLocaleString("pt-BR", {
-  maximumFractionDigits:2
-}) + "%";
+  <script>
+    const $ = (id) => document.getElementById(id);
 
-function calculate() {
-  const units = n("units"), price = n("price");
-  const revenue = units * price;
-  const products = units * n("cost");
-  const packing = units * (n("pack") + n("shipping"));
-  const loss = revenue * Math.min(100,n("loss")) / 100;
-  const fees = revenue * Math.min(100,n("fee")) / 100;
-  const taxes = revenue * Math.min(100,n("tax")) / 100;
-  const fixed = ["rent","payroll","utilities","marketing",
-    "accounting","maintenance","depreciation"]
-    .reduce((sum,id) => sum+n(id),0);
-  const interest = n("interest");
-  const variable = products + packing + loss + fees + taxes;
-  const profit = revenue - variable - fixed - interest;
-  const margin = revenue ? profit/revenue*100 : 0;
-  const perSale = units ? profit/units : 0;
-  const contribution = price * (1-(Math.min(100,n("loss"))+
-    Math.min(100,n("fee"))+Math.min(100,n("tax")))/100)
-    - n("cost") - n("pack") - n("shipping");
-  const target = fixed + interest;
-  const be = contribution > 0 ? Math.ceil(target/contribution) : null;
+    const initialValues = {
+      units: 189,
+      price: 15,
+      cost: 6,
+      packing: 1,
+      shipping: 0,
+      loss: 1,
+      fees: 3,
+      tax: 6,
+      fixed: 0,
+      interest: 0
+    };
 
-  $("profit").textContent = brl(profit);
-  $("profit").className = profit >= 0 ? "green" : "red";
-  $("revenue").textContent = brl(revenue);
-  $("margin").textContent = pct(margin);
-  $("perSale").textContent = brl(perSale);
-  $("breakEven").textContent = be === null ? "Não atingível" :
-    be.toLocaleString("pt-BR")+" un.";
-  $("breakRevenue").textContent = be === null ? "—" : brl(be*price);
+    function getNumber(id) {
+      const value = Number($(id).value);
+      return Number.isFinite(value) ? Math.max(0, value) : 0;
+    }
 
-  const values = {
-  sRevenue: revenue,
-  sProducts: products,
-  sPacking: packing,
-  sLoss: loss,
-  sFees: fees,
-  sTax: taxes,
-  sFixed: fixed,
-  sInterest: interest,
-  sProfit: profit
-};
-  Object.entries(values).forEach(([id,value]) => {
-    $(id).textContent = brl(value);
-  });
-  $("sProfit").className = profit >= 0 ? "green" : "red";
-}
-ids.forEach(id => $(id).addEventListener("input",calculate));
-$("reset").addEventListener("click",() => {
-  const defaults = {
-    units:300,price:50,cost:18,pack:2,shipping:0,loss:1,
-    fee:3,tax:6,rent:800,payroll:1200,utilities:250,
-    marketing:200,accounting:150,maintenance:100,
-    depreciation:0,interest:0
-  };
-  Object.entries(defaults).forEach(([id,value]) => $(id).value=value);
-  calculate();
-});
-$("print").addEventListener("click",() => window.print());
+    function money(value) {
+      return value.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function percent(value) {
+      return value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + "%";
+    }
+
+    function setText(id, value) {
+      $(id).textContent = value;
+    }
+
+    function calculate() {
+      const units = getNumber("units");
+      const price = getNumber("price");
+      const cost = getNumber("cost");
+      const packingPerUnit = getNumber("packing");
+      const shippingPerUnit = getNumber("shipping");
+
+      const lossRate = getNumber("loss") / 100;
+      const feeRate = getNumber("fees") / 100;
+      const taxRate = getNumber("tax") / 100;
+
+      const fixed = getNumber("fixed");
+      const other = getNumber("interest");
+
+      // Receita mensal
+      const revenue = units * price;
+
+      // Custos variáveis
+      const products = units * cost;
+      const packing = units * packingPerUnit;
+      const shipping = units * shippingPerUnit;
+
+      // Despesas calculadas sobre o faturamento
+      const loss = revenue * lossRate;
+      const fees = revenue * feeRate;
+
+      // IMPORTANTE:
+      // "tax" é o campo HTML.
+      // "taxes" é o valor numérico dos impostos.
+      const taxes = revenue * taxRate;
+
+      // Soma de todas as despesas
+      const totalCosts =
+        products +
+        packing +
+        shipping +
+        loss +
+        fees +
+        taxes +
+        fixed +
+        other;
+
+      // Lucro
+      const profit = revenue - totalCosts;
+
+      const margin = revenue > 0
+        ? (profit / revenue) * 100
+        : 0;
+
+      const unitProfit = units > 0
+        ? profit / units
+        : 0;
+
+      // Margem de contribuição por unidade antes das despesas fixas
+      const contributionPerUnit =
+        price -
+        cost -
+        packingPerUnit -
+        shippingPerUnit -
+        (price * lossRate) -
+        (price * feeRate) -
+        (price * taxRate);
+
+      let breakEven;
+
+      if (fixed + other <= 0) {
+        breakEven = 0;
+      } else if (contributionPerUnit > 0) {
+        breakEven = Math.ceil(
+          (fixed + other) / contributionPerUnit
+        );
+      } else {
+        breakEven = null;
+      }
+
+      // Atualiza os resultados.
+      // Cada valor monetário é um número, não um elemento HTML.
+      const values = {
+        sRevenue: revenue,
+        sProducts: products,
+        sPacking: packing,
+        sLoss: loss,
+        sFees: fees,
+        sTax: taxes,
+        sShipping: shipping,
+        sFixed: fixed,
+        sOther: other,
+        sProfit: profit,
+        sTotalCosts: totalCosts
+      };
+
+      for (const [id, value] of Object.entries(values)) {
+        setText(id, money(value));
+      }
+
+      setText("sMargin", percent(margin));
+      setText("sUnitProfit", money(unitProfit));
+
+      setText(
+        "sBreakEven",
+        breakEven === null
+          ? "Indefinido"
+          : breakEven.toLocaleString("pt-BR") + " un."
+      );
+
+      $("sProfit").classList.toggle("negative", profit < 0);
+
+      if (units === 0) {
+        setText("status", "Informe a quantidade de unidades vendidas.");
+      } else if (profit > 0) {
+        setText("status", "Seu negócio apresenta lucro estimado neste cenário.");
+      } else if (profit < 0) {
+        setText("status", "Atenção: neste cenário, as despesas superam o faturamento.");
+      } else {
+        setText("status", "Neste cenário, o faturamento cobre exatamente as despesas.");
+      }
+    }
+
+    // Recalcula sempre que um campo é alterado.
+    document.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("input", calculate);
+    });
+
+    // Restaura os valores iniciais.
+    $("reset").addEventListener("click", () => {
+      for (const [id, value] of Object.entries(initialValues)) {
+        $(id).value = value;
+      }
+
+      calculate();
+    });
+
+    // Primeiro cálculo ao abrir a página.
+    calculate();
+  </script>
+</body>
+</html>ddEventListener("click",() => window.print());
 calculate();
 </script>
 </body>
