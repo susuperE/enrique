@@ -203,10 +203,16 @@ function calculate() {
   $("breakRevenue").textContent = be === null ? "—" : brl(be*price);
 
   const values = {
-    sRevenue:revenue, sProducts:products, sPacking:packing,
-    sLoss:loss, sFees:fees, sTax:tax, sFixed:fixed,
-    sInterest:interest, sProfit:profit
-  };
+  sRevenue: revenue,
+  sProducts: products,
+  sPacking: packing,
+  sLoss: loss,
+  sFees: fees,
+  sTax: taxes,
+  sFixed: fixed,
+  sInterest: interest,
+  sProfit: profit
+};
   Object.entries(values).forEach(([id,value]) => {
     $(id).textContent = brl(value);
   });
